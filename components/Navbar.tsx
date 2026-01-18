@@ -1,12 +1,11 @@
 
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
   const navLinks = [
     { name: 'HOME', path: '/' },
@@ -24,9 +23,11 @@ const Navbar: React.FC = () => {
     <nav className="fixed w-full z-50 bg-black text-white border-b border-zinc-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center space-x-0 group">
-            <span className="text-xl font-black tracking-tighter text-white uppercase italic">SPARROW</span>
-            <span className="text-xl font-black tracking-tighter text-red-600 uppercase italic">AGENCY</span>
+          <Link to="/" className="flex items-center group">
+            <div className="flex flex-col -space-y-1">
+              <span className="text-lg font-black tracking-tighter text-white uppercase italic leading-none">SPARROW</span>
+              <span className="text-lg font-black tracking-tighter text-red-600 uppercase italic leading-none">AGENCY</span>
+            </div>
           </Link>
 
           {/* Desktop Links */}

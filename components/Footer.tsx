@@ -1,6 +1,6 @@
+
 import React from 'react';
 import { Facebook, Linkedin, MessageCircle, Mail } from 'lucide-react';
-import Logo from './Logo.tsx';
 
 const Footer: React.FC = () => {
   return (
@@ -8,12 +8,9 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-3 mb-6">
-              <Logo className="h-12 w-12" color="white" />
-              <div>
-                <h2 className="text-2xl font-bold tracking-tighter">SPARROW AGENCY</h2>
-                <p className="text-xs text-gray-400 tracking-[0.2em] uppercase">Public Relations & Event Management</p>
-              </div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold tracking-tighter">SPARROW AGENCY</h2>
+              <p className="text-xs text-gray-400 tracking-[0.2em] uppercase">Public Relations & Event Management</p>
             </div>
             <p className="text-gray-400 max-w-md leading-relaxed">
               Founded to confront antisemitism while elevating Jewish voices, history, and lived experience in the public arena. We operate where advocacy meets strategy.
