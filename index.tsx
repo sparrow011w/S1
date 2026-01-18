@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
@@ -32,5 +31,8 @@ if (!rootElement) {
     console.log("Sparrow Agency: Rendered successfully.");
   } catch (err) {
     console.error("Sparrow Agency: Initialization failed:", err);
+    if (rootElement) {
+        rootElement.innerHTML = '<div style="color: white; padding: 40px; text-align: center; font-family: sans-serif;">System encountered an error during startup. Please check console logs.</div>';
+    }
   }
 }
