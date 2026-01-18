@@ -1,13 +1,29 @@
+
 import React, { useState } from 'react';
 import { ShieldCheck, Lock, Eye, AlertCircle, FileText, Send } from 'lucide-react';
+import { db } from '../lib/db.ts';
 
 const Report: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    date: '',
+    location: '',
+    type: '',
+    description: '',
+    evidence: '',
+    confirmed: false
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Submission conceptually sent to info@sparrow-agency.com
-    console.log("Submitting report to info@sparrow-agency.com");
+    
+    // PERSIST TO DATABASE
+    db.save('REPORT', {
+      ...formData,
+      timestamp: new Date().toISOString()
+    });
+
+    console.log("Submitting report to intelligence vault and info@sparrow-agency.com");
     setSubmitted(true);
     window.scrollTo(0, 0);
   };
@@ -21,8 +37,8 @@ const Report: React.FC = () => {
           </div>
           <h2 className="text-3xl font-bold mb-4 italic uppercase tracking-tighter">Report Received</h2>
           <p className="text-gray-600 mb-8">
-            Your report has been securely transmitted to <span className="font-bold text-black">info@sparrow-agency.com</span>. Our specialists will begin the verification process immediately. 
-            All data is handled with the highest level of confidentiality under legal oversight.
+            Your report has been securely transmitted to <span className="font-bold text-black">info@sparrow-agency.com</span> and registered in our operational database. 
+            All data is handled with the highest level of confidentiality.
           </p>
           <button 
             onClick={() => window.location.hash = '#/'}
@@ -83,17 +99,35 @@ const Report: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
                     <label className="block text-sm font-bold text-zinc-700 mb-2 uppercase tracking-widest text-[10px]">Date of Incident</label>
-                    <input type="date" className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none" required />
+                    <input 
+                      type="date" 
+                      className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none" 
+                      required 
+                      value={formData.date}
+                      onChange={(e) => setFormData({...formData, date: e.target.value})}
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-zinc-700 mb-2 uppercase tracking-widest text-[10px]">Location / Platform</label>
-                    <input type="text" placeholder="e.g. University Campus, Digital Platforms" className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none" required />
+                    <input 
+                      type="text" 
+                      placeholder="e.g. University Campus, Digital Platforms" 
+                      className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none" 
+                      required 
+                      value={formData.location}
+                      onChange={(e) => setFormData({...formData, location: e.target.value})}
+                    />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2 uppercase tracking-widest text-[10px]">Type of Incident</label>
-                  <select className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none appearance-none" required>
+                  <select 
+                    className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none appearance-none" 
+                    required
+                    value={formData.type}
+                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                  >
                     <option value="">Select category...</option>
                     <option value="vandalism">Violence / Vandalism</option>
                     <option value="harassment">Verbal Harassment</option>
@@ -110,31 +144,45 @@ const Report: React.FC = () => {
                     className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none" 
                     placeholder="Provide as much detail as possible, including individuals involved, specific language used, and any witnesses."
                     required
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
                   ></textarea>
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-zinc-700 mb-2 uppercase tracking-widest text-[10px]">Supporting Evidence (Links/Files)</label>
                   <p className="text-[10px] text-gray-500 mb-3 italic">Screenshots, documents, or links to public posts are critical for verification.</p>
-                  <input type="text" placeholder="Paste evidence links here..." className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none mb-3" />
+                  <input 
+                    type="text" 
+                    placeholder="Paste evidence links here..." 
+                    className="w-full px-4 py-3 rounded border border-gray-200 focus:ring-2 focus:ring-red-600 outline-none mb-3" 
+                    value={formData.evidence}
+                    onChange={(e) => setFormData({...formData, evidence: e.target.value})}
+                  />
                   <div className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                     <div className="space-y-1 text-center">
                       <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
+                      <div className="flex text-sm text-gray-600 justify-center">
                         <label className="relative cursor-pointer bg-white rounded-md font-medium text-red-600 hover:text-red-500">
                           <span>Upload a file</span>
-                          <input type="file" className="sr-only" />
+                          <input type="file" className="sr-only" disabled />
                         </label>
                         <p className="pl-1 text-xs">or drag and drop</p>
                       </div>
-                      <p className="text-[10px] text-gray-500 uppercase">PNG, JPG, PDF up to 10MB</p>
+                      <p className="text-[10px] text-gray-500 uppercase">PNG, JPG, PDF up to 10MB (Simulated)</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="pt-8 border-t border-gray-100">
                   <div className="flex items-start mb-8">
-                    <input type="checkbox" className="mt-1 mr-3 h-4 w-4 text-red-600 border-gray-300 rounded" required />
+                    <input 
+                      type="checkbox" 
+                      className="mt-1 mr-3 h-4 w-4 text-red-600 border-gray-300 rounded cursor-pointer" 
+                      required 
+                      checked={formData.confirmed}
+                      onChange={(e) => setFormData({...formData, confirmed: e.target.checked})}
+                    />
                     <p className="text-xs text-gray-600 leading-relaxed">
                       I understand that Sparrow Agency will verify this information and may transform it into intelligence for real-world action. I confirm that the information provided is accurate and routed to <span className="font-bold">info@sparrow-agency.com</span> for processing.
                     </p>

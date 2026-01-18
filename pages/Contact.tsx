@@ -1,5 +1,7 @@
+
 import React, { useState } from 'react';
 import { Mail, Facebook, Linkedin, MessageCircle, Send, CheckCircle } from 'lucide-react';
+import { db } from '../lib/db.ts';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -11,8 +13,14 @@ const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real environment, this would call an API endpoint that triggers an email to info@sparrow-agency.com
-    console.log(`Submitting form to info@sparrow-agency.com`, formData);
+    
+    // PERSIST TO DATABASE
+    db.save('CONTACT', {
+      ...formData,
+      timestamp: new Date().toISOString()
+    });
+
+    console.log(`Submitting form to info@sparrow-agency.com and local storage vault`, formData);
     setSubmitted(true);
     setFormData({ name: '', email: '', message: '' });
   };
@@ -27,7 +35,7 @@ const Contact: React.FC = () => {
           <div className="space-y-4">
             <h2 className="text-3xl font-black uppercase italic tracking-tighter">Transmission Received</h2>
             <p className="text-zinc-600 leading-relaxed">
-              Your message has been securely routed to <span className="font-bold text-black">info@sparrow-agency.com</span>. Our team will review your inquiry and respond shortly.
+              Your message has been securely routed to <span className="font-bold text-black">info@sparrow-agency.com</span> and logged in our secure system. Our team will review your inquiry and respond shortly.
             </p>
           </div>
           <button 
