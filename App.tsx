@@ -12,6 +12,7 @@ import Contact from './pages/Contact.tsx';
 import Report from './pages/Report.tsx';
 import Methodology from './pages/Methodology.tsx';
 import StaffLogin from './pages/StaffLogin.tsx';
+import StaffDashboard from './pages/StaffDashboard.tsx';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -39,6 +40,7 @@ const App: React.FC = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/report" element={<Report />} />
             <Route path="/staff-login" element={<StaffLogin />} />
+            <Route path="/staff-dashboard" element={<StaffDashboard />} />
           </Routes>
         </main>
         <Footer />
