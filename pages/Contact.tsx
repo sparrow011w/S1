@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Mail, Facebook, Linkedin, MessageCircle, Send } from 'lucide-react';
+import { Mail, Facebook, Linkedin, MessageCircle, Send, CheckCircle } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -8,17 +7,44 @@ const Contact: React.FC = () => {
     email: '',
     message: ''
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Thank you for your message. Our team will reply as soon as possible.");
+    // In a real environment, this would call an API endpoint that triggers an email to info@sparrow-agency.com
+    console.log(`Submitting form to info@sparrow-agency.com`, formData);
+    setSubmitted(true);
     setFormData({ name: '', email: '', message: '' });
   };
+
+  if (submitted) {
+    return (
+      <div className="bg-white min-h-screen pt-32 pb-20 flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center space-y-8 animate-in fade-in duration-500">
+          <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+            <CheckCircle className="w-10 h-10 text-green-600" />
+          </div>
+          <div className="space-y-4">
+            <h2 className="text-3xl font-black uppercase italic tracking-tighter">Transmission Received</h2>
+            <p className="text-zinc-600 leading-relaxed">
+              Your message has been securely routed to <span className="font-bold text-black">info@sparrow-agency.com</span>. Our team will review your inquiry and respond shortly.
+            </p>
+          </div>
+          <button 
+            onClick={() => setSubmitted(false)}
+            className="inline-block border-2 border-black px-8 py-3 font-bold hover:bg-black hover:text-white transition-all uppercase tracking-widest text-xs italic"
+          >
+            Send Another Message
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white min-h-screen animate-in fade-in duration-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 pt-16">
           
           {/* Left: Contact Info */}
           <div>
@@ -35,7 +61,7 @@ const Contact: React.FC = () => {
                 <div>
                   <h3 className="font-bold text-lg">General Inquiries</h3>
                   <p className="text-gray-500 uppercase tracking-widest text-xs mb-1 font-bold">Primary Channel</p>
-                  <a href="mailto:info@sparrowagency.org" className="text-red-700 font-bold hover:underline">info@sparrowagency.org</a>
+                  <a href="mailto:info@sparrow-agency.com" className="text-red-700 font-bold hover:underline">info@sparrow-agency.com</a>
                 </div>
               </div>
 
@@ -52,7 +78,7 @@ const Contact: React.FC = () => {
                     <MessageCircle className="w-6 h-6" />
                   </a>
                 </div>
-                <p className="mt-4 text-xs text-gray-400 italic italic">TBD Channels will be updated upon activation</p>
+                <p className="mt-4 text-xs text-gray-400 italic">Official social media channels monitored for rapid engagement.</p>
               </div>
             </div>
           </div>

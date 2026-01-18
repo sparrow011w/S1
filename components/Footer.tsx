@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Facebook, Linkedin, MessageCircle, Mail } from 'lucide-react';
 import Logo from './Logo.tsx';
@@ -24,17 +23,17 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-6">Connect</h3>
             <div className="flex flex-col space-y-4">
-              <a href="#" className="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+              <a href="#" className="flex items-center text-gray-400 hover:text-red-600 transition-colors">
                 <Facebook className="w-5 h-5 mr-3" /> Facebook
               </a>
-              <a href="#" className="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+              <a href="#" className="flex items-center text-gray-400 hover:text-red-600 transition-colors">
                 <Linkedin className="w-5 h-5 mr-3" /> LinkedIn
               </a>
-              <a href="#" className="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+              <a href="#" className="flex items-center text-gray-400 hover:text-red-600 transition-colors">
                 <MessageCircle className="w-5 h-5 mr-3" /> WhatsApp
               </a>
-              <a href="mailto:info@sparrowagency.org" className="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
-                <Mail className="w-5 h-5 mr-3" /> Email Us
+              <a href="mailto:info@sparrow-agency.com" className="flex items-center text-gray-400 hover:text-red-600 transition-colors">
+                <Mail className="w-5 h-5 mr-3" /> info@sparrow-agency.com
               </a>
             </div>
           </div>

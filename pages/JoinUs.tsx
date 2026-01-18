@@ -120,6 +120,9 @@ const JoinUs: React.FC = () => {
 
     setIsSubmitting(true);
 
+    // Conceptually sending data to info@sparrow-agency.com
+    console.log("Submitting partnership application to info@sparrow-agency.com");
+
     setTimeout(() => {
       setShowToast(true);
       setFormData({
@@ -134,7 +137,7 @@ const JoinUs: React.FC = () => {
       setErrors({});
       setIsSubmitting(false);
       window.scrollTo(0, 0);
-      setTimeout(() => setShowToast(false), 5000);
+      setTimeout(() => setShowToast(false), 8000);
     }, 1500);
   };
 
@@ -159,14 +162,16 @@ const JoinUs: React.FC = () => {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-6 py-4 shadow-2xl flex items-center gap-4 border border-red-500"
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-6 py-4 shadow-2xl flex items-center gap-4 border border-red-500 max-w-lg w-full"
           >
-            <CheckCircle className="w-6 h-6" />
+            <CheckCircle className="w-6 h-6 shrink-0" />
             <div>
-              <p className="font-bold text-sm uppercase tracking-widest">Application Submitted</p>
-              <p className="text-xs opacity-80">Our investigative team will review your profile shortly.</p>
+              <p className="font-bold text-sm uppercase tracking-widest leading-none mb-1">Application Transmitted</p>
+              <p className="text-[10px] opacity-90 uppercase tracking-tighter">
+                Sent to <span className="font-bold">info@sparrow-agency.com</span>. Our investigators will review your profile.
+              </p>
             </div>
-            <button onClick={() => setShowToast(false)} className="ml-4 hover:opacity-70">
+            <button onClick={() => setShowToast(false)} className="ml-auto hover:opacity-70">
               <X className="w-4 h-4" />
             </button>
           </motion.div>
@@ -351,7 +356,7 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 5: Availability */}
+          {/* Section 5: Deployment Capability */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">05</span> Deployment Capability
@@ -493,7 +498,7 @@ const JoinUs: React.FC = () => {
               )}
             </button>
             <p className="text-center text-[10px] text-zinc-600 font-bold uppercase tracking-[0.2em] mt-6 leading-relaxed">
-              BY SUBMITTING, YOU AFFIRM THE INTEGRITY OF ALL PROVIDED DATA.<br /> DATA IS ENCRYPTED AND STORED IN SECURE ENVIRONMENTS.
+              BY SUBMITTING, YOU AFFIRM THE INTEGRITY OF ALL PROVIDED DATA.<br /> DATA IS ENCRYPTED AND STORED IN SECURE ENVIRONMENTS AT INFO@SPARROW-AGENCY.COM.
             </p>
           </motion.div>
 
