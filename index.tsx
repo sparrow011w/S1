@@ -2,8 +2,19 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
 
 console.log("Sparrow Agency: Initializing...");
+
+// Global non-React error handling
+window.onerror = (message, source, lineno, colno, error) => {
+  console.error("Global Error Caught:", { message, source, lineno, colno, error });
+  // You could send this to an error tracking service here
+};
+
+window.onunhandledrejection = (event) => {
+  console.error("Unhandled Promise Rejection:", event.reason);
+};
 
 const rootElement = document.getElementById('root');
 
@@ -14,7 +25,9 @@ if (!rootElement) {
     const root = createRoot(rootElement);
     root.render(
       <React.StrictMode>
-        <App />
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
       </React.StrictMode>
     );
     console.log("Sparrow Agency: Rendered successfully.");
