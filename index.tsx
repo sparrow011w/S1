@@ -1,15 +1,14 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
-import ErrorBoundary from './components/ErrorBoundary';
+import App from './App.tsx';
+import ErrorBoundary from './components/ErrorBoundary.tsx';
 
 console.log("Sparrow Agency: Initializing...");
 
 // Global non-React error handling
 window.onerror = (message, source, lineno, colno, error) => {
   console.error("Global Error Caught:", { message, source, lineno, colno, error });
-  // You could send this to an error tracking service here
 };
 
 window.onunhandledrejection = (event) => {

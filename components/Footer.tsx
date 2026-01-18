@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Facebook, Linkedin, MessageCircle, Mail } from 'lucide-react';
-import Logo from './Logo';
+import Logo from './Logo.tsx';
 
 const Footer: React.FC = () => {
   return (

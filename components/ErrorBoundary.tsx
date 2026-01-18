@@ -1,5 +1,5 @@
 
-import React, { ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCcw } from 'lucide-react';
 
 interface Props {
@@ -11,9 +11,9 @@ interface State {
   error?: Error;
 }
 
-// Fixed ErrorBoundary by explicitly extending React.Component and providing a constructor
-class ErrorBoundary extends React.Component<Props, State> {
-  // Fixed state initialization and ensured constructor calls super(props) to properly inherit React.Component properties
+// Fixed ErrorBoundary by extending Component directly from react and properly typing props and state
+class ErrorBoundary extends Component<Props, State> {
+  // Initialize state in constructor to properly inherit from Component
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -30,12 +30,13 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   private handleReset = () => {
-    // Fixed: Accessed setState from the inherited React.Component class
+    // Correctly using setState inherited from Component
     this.setState({ hasError: false });
     window.location.href = '/';
   };
 
   public render() {
+    // Correctly accessing state inherited from Component
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -68,7 +69,7 @@ class ErrorBoundary extends React.Component<Props, State> {
       );
     }
 
-    // Fixed: Accessed children via this.props which is now correctly inherited
+    // Correctly accessing props inherited from Component
     return this.props.children;
   }
 }
