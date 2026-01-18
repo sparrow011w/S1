@@ -49,6 +49,16 @@ const JoinUs: React.FC = () => {
     'Social Media', 'Community Engagement'
   ];
 
+  // Helper to convert file to base64 for mock database storage
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   // Validation Logic
   useEffect(() => {
     const checkValidity = () => {
@@ -80,8 +90,8 @@ const JoinUs: React.FC = () => {
       }
     } else if (type === 'file') {
       const file = files?.[0];
-      if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
-        alert("File too large. Please upload a file smaller than 5MB.");
+      if (file && file.size > 2 * 1024 * 1024) { // Reduced to 2MB for localStorage safety
+        alert("File too large for local storage (Max 2MB). In a production environment with a real database, this limit would be higher.");
         target.value = ''; 
         setFormData(prev => ({ ...prev, [name]: null }));
       } else {
@@ -122,32 +132,41 @@ const JoinUs: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // PERSIST TO DATABASE
-    db.save('PARTNERSHIP', {
-      ...formData,
-      cvFile: formData.cvFile?.name || 'No file',
-      workExamplesFile: formData.workExamplesFile?.name || 'No file'
-    });
+    try {
+      // Process files for storage
+      const cvFileData = formData.cvFile ? await fileToBase64(formData.cvFile) : null;
+      const workFileData = formData.workExamplesFile ? await fileToBase64(formData.workExamplesFile) : null;
 
-    setTimeout(() => {
-      setShowToast(true);
-      setFormData({
-        fullName: '', companyName: '', email: '', phone: '', website: '', location: '',
-        services: [], otherService: '', skillsSummary: '', expertise: '', tools: '',
-        yearsExperience: '', cvFile: null, portfolioUrl: '', workExamplesFile: null,
-        availability: '', preferredSchedule: '', isRemote: false, projectDuration: '',
-        rates: '', openToNegotiation: false, whyJoin: '',
-        complianceLaw: false, complianceMaterials: false, complianceSecurity: false,
-        signature: '', date: new Date().toISOString().split('T')[0]
+      // PERSIST TO DATABASE
+      db.save('PARTNERSHIP', {
+        ...formData,
+        cvFile: cvFileData ? { name: formData.cvFile?.name, data: cvFileData } : 'No file',
+        workExamplesFile: workFileData ? { name: formData.workExamplesFile?.name, data: workFileData } : 'No file'
       });
-      setErrors({});
+
+      setTimeout(() => {
+        setShowToast(true);
+        setFormData({
+          fullName: '', companyName: '', email: '', phone: '', website: '', location: '',
+          services: [], otherService: '', skillsSummary: '', expertise: '', tools: '',
+          yearsExperience: '', cvFile: null, portfolioUrl: '', workExamplesFile: null,
+          availability: '', preferredSchedule: '', isRemote: false, projectDuration: '',
+          rates: '', openToNegotiation: false, whyJoin: '',
+          complianceLaw: false, complianceMaterials: false, complianceSecurity: false,
+          signature: '', date: new Date().toISOString().split('T')[0]
+        });
+        setErrors({});
+        setIsSubmitting(false);
+        window.scrollTo(0, 0);
+        setTimeout(() => setShowToast(false), 8000);
+      }, 1000);
+    } catch (err) {
+      console.error("Transmission Error:", err);
+      alert("An error occurred during secure transmission.");
       setIsSubmitting(false);
-      window.scrollTo(0, 0);
-      setTimeout(() => setShowToast(false), 8000);
-    }, 1500);
+    }
   };
 
-  // Define fadeInUp with any to bypass strict framer-motion type checks
   const fadeInUp: any = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
@@ -162,11 +181,9 @@ const JoinUs: React.FC = () => {
 
   return (
     <div className="bg-black text-white min-h-screen pt-24 pb-20">
-      {/* Toast Notification */}
       <AnimatePresence>
         {showToast && (
           <motion.div 
-            // Fix: Use any cast spread to solve framer-motion TS attribute errors
             {...({
               initial: { opacity: 0, y: -50 },
               animate: { opacity: 1, y: 0 },
@@ -188,11 +205,9 @@ const JoinUs: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Header */}
       <section className="mb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            // Fix: Use any cast spread to solve framer-motion TS attribute errors
             {...({
               initial: { opacity: 0, scale: 0.95 },
               animate: { opacity: 1, scale: 1 }
@@ -204,7 +219,6 @@ const JoinUs: React.FC = () => {
             </span>
           </motion.div>
           <motion.h1 
-            // Fix: Use any cast spread to solve framer-motion TS attribute errors
             {...({
               initial: { opacity: 0, y: 30 },
               animate: { opacity: 1, y: 0 }
@@ -214,7 +228,6 @@ const JoinUs: React.FC = () => {
             SERVICE PROVIDER <span className="text-red-600">APPLICATION</span>
           </motion.h1>
           <motion.p 
-            // Fix: Use any cast spread to solve framer-motion TS attribute errors
             {...({
               initial: { opacity: 0, y: 30 },
               animate: { opacity: 1, y: 0 },
@@ -227,11 +240,9 @@ const JoinUs: React.FC = () => {
         </div>
       </section>
 
-      {/* Form Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit}>
           
-          {/* Section 1: Identity */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">01</span> Identity & Reach
@@ -267,7 +278,6 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 2: Domains of Expertise */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">02</span> Domains of Expertise
@@ -317,7 +327,6 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 3: Professional Vector */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">03</span> Professional Vector
@@ -338,7 +347,7 @@ const JoinUs: React.FC = () => {
                   <input type="text" name="yearsExperience" value={formData.yearsExperience} onChange={handleChange} className={inputClasses} placeholder="E.G. 5+ YEARS" />
                   
                   <div className="mt-6">
-                    <label className={labelClasses}>CURRICULUM VITAE</label>
+                    <label className={labelClasses}>CURRICULUM VITAE (MAX 2MB)</label>
                     <div className="relative">
                       <input type="file" name="cvFile" onChange={handleChange} className="hidden" id="cv-upload" accept=".pdf,.doc,.docx" />
                       <label htmlFor="cv-upload" className="flex items-center justify-between w-full px-4 py-3 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 cursor-pointer transition-colors text-xs font-bold uppercase tracking-widest">
@@ -352,7 +361,6 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 4: Evidence of Impact */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">04</span> Evidence of Impact
@@ -363,7 +371,7 @@ const JoinUs: React.FC = () => {
                 <input type="url" name="portfolioUrl" value={formData.portfolioUrl} onChange={handleChange} className={inputClasses} placeholder="HTTPS://" />
               </div>
               <div>
-                <label className={labelClasses}>Work Samples Upload</label>
+                <label className={labelClasses}>Work Samples Upload (MAX 2MB)</label>
                 <div className="relative">
                   <input type="file" name="workExamplesFile" onChange={handleChange} className="hidden" id="examples-upload" accept=".pdf,.jpg,.png,.zip" />
                   <label htmlFor="examples-upload" className="flex items-center justify-between w-full px-4 py-3 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 cursor-pointer transition-colors text-xs font-bold uppercase tracking-widest">
@@ -375,7 +383,6 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 5: Deployment Capability */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">05</span> Deployment Capability
@@ -405,7 +412,6 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 6: Compensation Matrix */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">06</span> Compensation Matrix
@@ -429,7 +435,6 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 7: Motivation */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">07</span> Strategic Interest
@@ -440,7 +445,6 @@ const JoinUs: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Section 8: Integrity & Compliance */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">08</span> Integrity & Compliance
@@ -480,7 +484,6 @@ const JoinUs: React.FC = () => {
             {errors.compliance && <p className="text-red-500 text-[10px] mt-4 font-bold uppercase tracking-widest flex items-center gap-2"><AlertCircle size={14} /> {errors.compliance}</p>}
           </motion.div>
 
-          {/* Section 9: Authentication */}
           <motion.div {...fadeInUp} className={sectionClasses}>
             <h2 className={sectionTitleClasses}>
               <span className="text-red-600">09</span> Authentication
@@ -524,7 +527,6 @@ const JoinUs: React.FC = () => {
         </form>
       </section>
 
-      {/* Info Sections Footer */}
       <section className="max-w-4xl mx-auto px-4 mt-20 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="p-8 border border-zinc-900 bg-zinc-950/50">
           <Briefcase className="text-red-600 w-8 h-8 mb-6" />

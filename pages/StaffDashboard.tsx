@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db, Submission } from '../lib/db.ts';
-import { Database, Shield, Clock, CheckCircle, Archive, ChevronDown, Filter, Search, Download, Trash2, RefreshCcw } from 'lucide-react';
+import { Database, Shield, Clock, CheckCircle, Archive, ChevronDown, Filter, Search, Download, Trash2, RefreshCcw, FileDown, FileText as FileIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const StaffDashboard: React.FC = () => {
@@ -40,11 +40,46 @@ const StaffDashboard: React.FC = () => {
     if (selectedItem?.id === id) setSelectedItem({ ...selectedItem, status });
   };
 
-  const renderDataValue = (val: any) => {
-    if (Array.isArray(val)) return val.join(', ');
-    if (typeof val === 'boolean') return val ? 'TRUE' : 'FALSE';
-    if (val === null || val === undefined) return 'N/A';
-    return String(val);
+  const handleDownload = (filename: string, dataUrl: string) => {
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const renderDataValue = (key: string, val: any) => {
+    // Detect if this is a file object
+    if (val && typeof val === 'object' && val.data && val.name) {
+      return (
+        <div className="bg-zinc-900 border border-zinc-800 p-4 mt-2 flex items-center justify-between group/file">
+          <div className="flex items-center gap-3">
+            <div className="bg-zinc-800 p-2 rounded">
+              <FileIcon size={18} className="text-red-600" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase text-white truncate max-w-[150px]">{val.name}</span>
+              <span className="text-[8px] text-zinc-600 font-bold uppercase">SECURE ATTACHMENT</span>
+            </div>
+          </div>
+          <button 
+            onClick={() => handleDownload(val.name, val.data)}
+            className="bg-red-600 hover:bg-red-700 text-white p-2 rounded transition-all flex items-center gap-2 text-[9px] font-black uppercase tracking-tighter"
+          >
+            <FileDown size={14} /> DOWNLOAD
+          </button>
+        </div>
+      );
+    }
+
+    if (Array.isArray(val)) return <span className="text-white">{val.join(', ')}</span>;
+    if (typeof val === 'boolean') return <span className={val ? "text-green-500 font-bold" : "text-red-500 font-bold"}>{val ? 'TRUE' : 'FALSE'}</span>;
+    if (val === null || val === undefined) return <span className="text-zinc-700 italic">N/A</span>;
+    
+    // Fallback for long text
+    const strVal = String(val);
+    return <span className="text-white leading-relaxed">{strVal}</span>;
   };
 
   return (
@@ -54,7 +89,7 @@ const StaffDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-3 text-red-600 mb-2">
               <Database size={20} />
-              <span className="text-[10px] font-bold tracking-[0.3em] uppercase">Intelligence Vault v1.1.0</span>
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase">Intelligence Vault v1.2.0</span>
             </div>
             <h1 className="text-3xl font-black italic uppercase tracking-tighter">Operational <span className="text-zinc-600">Dashboard</span></h1>
           </div>
@@ -159,9 +194,9 @@ const StaffDashboard: React.FC = () => {
                     {Object.entries(selectedItem.data).map(([key, value]) => (
                       <div key={key} className="group/field">
                         <label className="block text-[9px] text-zinc-600 font-bold uppercase tracking-widest mb-1 group-hover/field:text-red-600 transition-colors">{key.replace(/([A-Z])/g, ' $1')}</label>
-                        <p className="text-xs text-white leading-relaxed break-words bg-zinc-900/30 p-2 border-l border-zinc-800">
-                          {renderDataValue(value)}
-                        </p>
+                        <div className="text-xs break-words bg-zinc-900/30 p-2 border-l border-zinc-800">
+                          {renderDataValue(key, value)}
+                        </div>
                       </div>
                     ))}
                   </div>
